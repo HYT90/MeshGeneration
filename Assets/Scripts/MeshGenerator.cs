@@ -18,6 +18,10 @@ public class MeshGenerator : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
 
         CreateShape();
+    }
+
+    private void Update()
+    {
         UpdateMesh();
     }
 
@@ -54,13 +58,29 @@ public class MeshGenerator : MonoBehaviour
             vert++;
         }
 
+        /*
+        uv = new Vector2[4];
+
+        uv[0] = Vector2.zero;
+        uv[1] = Vector2.up;
+        uv[2] = Vector2.right;
+        uv[3] = Vector2.one;
+        */
+
+        StartCoroutine(SetUV());
+    }
+
+    IEnumerator SetUV()
+    {
         uv = new Vector2[vertices.Length];
 
-        for(int x = 0, i = 0; x <= xSize; ++x)
+        for (int x = 0, i = 0; x <= xSize; ++x)
         {
-            for(int y = 0; y <= ySize; ++y)
+            for (int y = 0; y <= ySize; ++y)
             {
-                uv[i++] = new Vector2((float)x / xSize, (float)y / ySize);
+                uv[i++] = new Vector2((float)(x) / xSize, (float)(y) / ySize);
+                //uv[i++] = new Vector2((float)(xSize - y) / xSize, (float)(ySize - x) / ySize);
+                yield return 0;
             }
         }
     }
