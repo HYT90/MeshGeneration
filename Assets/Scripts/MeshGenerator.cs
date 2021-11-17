@@ -17,15 +17,16 @@ public class MeshGenerator : MonoBehaviour
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
-        CreateShape();
+        StartCoroutine(CreateShape());
     }
+
 
     private void Update()
     {
         UpdateMesh();
     }
 
-    void CreateShape()
+    IEnumerator CreateShape()
     {
         vertices = new Vector3[(xSize + 1) * (ySize + 1)];
         
@@ -40,20 +41,26 @@ public class MeshGenerator : MonoBehaviour
 
         triangles = new int[xSize * ySize * 6];
         int vert = 0, tris = 0;
+        uv = new Vector2[vertices.Length];
 
-        for (int j = 0; j < xSize; ++j)
+        for (int j = 0, z = 0; j <= xSize; ++j)
         {
-            for (int i = 0; i < ySize; ++i)
+            for (int i = 0; i <= ySize; ++i)
             {
-                triangles[tris] = vert;
-                triangles[tris + 1] = vert + 1;
-                triangles[tris + 2] = vert + ySize + 1;
-                triangles[tris + 3] = vert + 1;
-                triangles[tris + 4] = vert + ySize + 2;
-                triangles[tris + 5] = vert + ySize + 1;
-
-                vert++;
-                tris += 6;
+                if(j < xSize && i < ySize)
+                {
+                    triangles[tris] = vert;
+                    triangles[tris + 1] = vert + 1;
+                    triangles[tris + 2] = vert + ySize + 1;
+                    triangles[tris + 3] = vert + 1;
+                    triangles[tris + 4] = vert + ySize + 2;
+                    triangles[tris + 5] = vert + ySize + 1;
+                    vert++;
+                    tris += 6;
+                }
+                
+                uv[z++] = new Vector2((float)(j) / xSize, (float)(i) / ySize);
+                yield return 0;
             }
             vert++;
         }
@@ -67,7 +74,7 @@ public class MeshGenerator : MonoBehaviour
         uv[3] = Vector2.one;
         */
 
-        StartCoroutine(SetUV());
+        //StartCoroutine(SetUV());
     }
 
     IEnumerator SetUV()
